@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mulatap Wallet Demo</title>
+</head>
+<body>
+
+<h1>Mulatap Wallet Demo ✅</h1>
+
+<!-- USERS -->
+<h2>Users</h2>
+<button onclick="loadUsers()">Load Users</button>
+<pre id="users"></pre>
+
+<!-- ADD MONEY -->
+<h2>Add Money</h2>
+<input id="email1" placeholder="Email">
+<input id="amount1" placeholder="Amount">
+<button onclick="addMoney()">Add</button>
+
+<!-- SEND MONEY -->
+<h2>Send Money</h2>
+<input id="email2" placeholder="Email">
+<input id="amount2" placeholder="Amount">
+<button onclick="sendMoney()">Send</button>
+
+<!-- TRANSACTIONS -->
+<h2>Transactions</h2>
+<button onclick="loadTransactions()">Load Transactions</button>
+<pre id="transactions"></pre>
+
+<!-- QR -->
+<h2>QR Code</h2>
+<input id="qrEmail" placeholder="Email">
+<input id="qrAmount" placeholder="Amount">
+<button onclick="generateQR()">Generate QR</button>
+<br><br>
+<img id="qr" width="200">
+
+<script>
+const base = "http://localhost:3001";
+
+// LOAD USERS
+function loadUsers() {
+  fetch(base + "/api/users")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("users").innerText = JSON.stringify(data, null, 2);
+    });
+}
+
+// ADD MONEY
+function addMoney() {
+  fetch(base + "/api/wallet/add", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      email: document.getElementById("email1").value,
+      amount: Number(document.getElementById("amount1").value)
+    })
+  });
+}
+
+// SEND MONEY
+function sendMoney() {
+  fetch(base + "/api/wallet/send", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      email: document.getElementById("email2").value,
+      amount: Number(document.getElementById("amount2").value)
+    })
+  });
+}
+
+// LOAD TRANSACTIONS
+function loadTransactions() {
+  fetch(base + "/api/transactions")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("transactions").innerText = JSON.stringify(data, null, 2);
+    });
+}
+
+// GENERATE QR
+function generateQR() {
+  fetch(base + "/api/payment/generate", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      email: document.getElementById("qrEmail").value,
+      amount: Number(document.getElementById("qrAmount").value)
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("qr").src = data.qr;
+  });
+}
+</script>
+
+</body>
+</html>
